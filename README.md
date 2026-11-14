@@ -7,18 +7,18 @@ mindmap план.md      # другой файл; если его нет, поя
 
 ## Установка
 
-Нужен Python 3.10 или новее и [pipx](https://pipx.pypa.io/).
+Нужен Python 3.10 или новее и [pipx](https://pipx.pypa.io/); git не нужен — ставится из архива GitHub.
 
 ```bash
 # Linux (Ubuntu/Debian)
-sudo apt install pipx git && pipx ensurepath     # затем открыть терминал заново
-pipx install git+https://github.com/antiloch/mindmap
+sudo apt install pipx && pipx ensurepath          # затем открыть терминал заново
+pipx install https://github.com/antiloch/mindmap/archive/refs/heads/main.zip
 # macOS
 brew install pipx && pipx ensurepath
-pipx install git+https://github.com/antiloch/mindmap
+pipx install https://github.com/antiloch/mindmap/archive/refs/heads/main.zip
 ```
 
-Обновить — `pipx upgrade mindmap`, удалить — `pipx uninstall mindmap`. Карта — обычный файл `.md`, программа его только читает и пишет; между компьютерами его переносит iCloud, облако или флешка.
+Обновить — та же команда с `--force` (`pipx install --force https://…/main.zip`), удалить — `pipx uninstall mindmap`. Карта — обычный файл `.md`, программа его только читает и пишет; между компьютерами его переносит iCloud, облако или флешка.
 
 На Linux ссылки открываются через `xdg-open`, копирование `y` идёт в буфер через `wl-copy` (Wayland), `xclip` или `xsel` — если ни одной нет, через сам терминал (OSC 52, умеют многие терминалы, в том числе по SSH). На macOS — `open` и `pbcopy`.
 
@@ -194,6 +194,10 @@ pipx install git+https://github.com/antiloch/mindmap
 ## Сохранение
 
 Автоматически после каждого действия, атомарно. Открытие файла его не переписывает: неровный файл, написанный руками, приводится к единому виду только при первой правке. Если файл поменяли извне в момент записи, чужая версия остаётся рядом как `<имя>.conflict-<время>`. Файл, выгруженный iCloud, сначала скачивается, чтобы пустая карта не затёрла настоящую. Отмена `u` — 100 шагов, на время сеанса.
+
+## Публикация
+
+Программа выложена открыто: <https://github.com/antiloch/mindmap> (отдельный репозиторий, своя история; коммиты от `…@users.noreply.github.com`). Источник правды — эта папка; выложить новую версию — `./publish.sh "что изменилось"`: копирует файлы программы в `~/Developer/mindmap` и отправляет на GitHub (`gh` уже вошёл в аккаунт). Сам `publish.sh` не публикуется.
 
 ## Разработка
 
