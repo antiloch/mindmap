@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mindmap"
+version = "0.1.0"
+description = "Интеллект-карты, канбан и сетевой график в терминале; карта — обычный файл .md"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["textual==8.2.8"]
+
+[project.scripts]
+mindmap = "mindmap.__main__:main"
+
+[tool.setuptools]
+packages = ["mindmap"]
