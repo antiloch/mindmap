@@ -1676,8 +1676,8 @@ async def test_board_planned_next_week_first_by_date_then_priority(tmp_path):
         await pilot.pause()
         board = app.query_board()
         assert [n.title for n in board.cards[0]] == [
-            "след. пн", "след. ср",                                   # следующая неделя — по сроку
-            "позже главное", "позже важное", "позже прочее"]          # дальше — по приоритету
+            "след. ср", "след. пн",                                   # следующая неделя — по приоритету, затем по дате
+            "позже главное", "позже важное", "позже прочее"]          # дальше так же
         lines = [board.render_line(y).text for y in range(board.size.height)]
         assert any("Следующая неделя (2)" in l for l in lines) and any("Позже (3)" in l for l in lines)
         assert "идёт" in [n.title for n in board.cards[1]]

@@ -11,7 +11,7 @@ DARK_RED = "failed" # провалено: полупрозрачный крас�
 RED = "overdue"     # не завершено, срок прошёл
 YELLOW = "running"  # уже идёт: начался и кончается позже этой недели
 ORANGE = "week"     # период задевает текущую неделю
-GREEN = "next"      # короткий период начинается на следующей неделе
+GREEN = "next"      # начинается на следующей неделе (любой длины)
 PLAIN = "plain"     # всё остальное
 
 # Места на доске
@@ -23,7 +23,6 @@ B_WEEK = "week"
 B_RUNNING = "running"
 B_DONE = "done"
 
-LONG_DAYS = 7
 
 
 def week_bounds(now: datetime) -> tuple[datetime, datetime, datetime]:
@@ -47,7 +46,7 @@ def classify(node, now: datetime) -> str:
         return YELLOW
     if p.first() < next_mon and p.last() >= mon:
         return ORANGE
-    if next_mon <= p.first() < after_next and p.days <= LONG_DAYS:
+    if next_mon <= p.first() < after_next:
         return GREEN
     return PLAIN
 

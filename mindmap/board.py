@@ -50,9 +50,6 @@ def collect(sheets: list[Node], now: datetime) -> dict[str, list[Node]]:
                 out.setdefault(place, []).append(node)
     for place, nodes in out.items():
         nodes.sort(key=lambda n: (n.priority or NO_PRIORITY, n.period.first(), n.period.last()))
-    if st.B_NEXT in out:
-        # Следующая неделя — по сроку: так её читают как план по дням.
-        out[st.B_NEXT].sort(key=lambda n: (n.period.first(), n.period.last(), n.priority or NO_PRIORITY))
     return out
 
 
