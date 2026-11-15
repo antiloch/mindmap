@@ -9,11 +9,13 @@ from .model import DONE, FAILED
 GREY = "done"       # завершено: полупрозрачный
 DARK_RED = "failed" # провалено: полупрозрачный красный
 RED = "overdue"     # не завершено, срок прошёл
+YELLOW = "running"  # уже идёт: начался и кончается позже этой недели
 ORANGE = "week"     # период задевает текущую неделю
 GREEN = "next"      # короткий период начинается на следующей неделе
 PLAIN = "plain"     # всё остальное
 
 # Места на доске
+B_NEXT = "next"         # начинается на следующей неделе
 B_PLANNED = "planned"
 B_TODAY = "today"
 B_OVERDUE = "overdue"
@@ -41,6 +43,8 @@ def classify(node, now: datetime) -> str:
     if p.last() < now:
         return RED
     mon, next_mon, after_next = week_bounds(now)
+    if p.first() <= now and p.last() >= next_mon:
+        return YELLOW
     if p.first() < next_mon and p.last() >= mon:
         return ORANGE
     if next_mon <= p.first() < after_next and p.days <= LONG_DAYS:
@@ -57,12 +61,9 @@ def bucket(node, now: datetime) -> str | None:
         return B_DONE
     if kind == RED:
         return B_OVERDUE
+    if kind == YELLOW:
+        return B_RUNNING
     if kind == ORANGE:
-        last = node.period.last()
-        if last.date() == now.date():
-            return B_TODAY
-        _, next_mon, _ = week_bounds(now)
-        if node.period.days > LONG_DAYS and last >= next_mon:
-            return B_RUNNING
-        return B_WEEK
-    return B_PLANNED
+        return B_TODAY if node.period.last().date() == now.date() else B_WEEK
+    _, _, after_next = week_bounds(now)
+    return B_NEXT if node.period.first() < after_next else B_PLANNED

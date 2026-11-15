@@ -264,8 +264,8 @@ class MindmapApp(App):
                 info.append(" " + cut_left(" › ".join(names), width - 2))
         screen.query_one("#info", Static).update(info)
         hints = Text(no_wrap=True, overflow="ellipsis")
-        for label, kind in (("просрочено", st.RED), ("эта неделя", st.ORANGE), ("след.", st.GREEN),
-                            ("завершено", st.GREY), ("провалено", st.DARK_RED)):
+        for label, kind in (("просрочено", st.RED), ("идёт", st.YELLOW), ("неделя", st.ORANGE), ("след.", st.GREEN),
+                            ("завершено", st.GREY), ("провал", st.DARK_RED)):
             hints.append(" ■ ", style=COLORS[kind])
             hints.append(label, style=COLORS[kind])
         hints.append(HINTS[self.mode], style="#8b93a1")

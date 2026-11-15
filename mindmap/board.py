@@ -22,14 +22,16 @@ MIN_INNER = 14   # уже не вкладываем: строка статуса
 COLUMN_TITLES = ["Запланировано", "На этой неделе"]
 COLS = len(COLUMN_TITLES)
 SECTIONS = [
-    [(None, st.B_PLANNED)],
+    [("Следующая неделя", st.B_NEXT), ("Позже", st.B_PLANNED)],
     [("Сегодня", st.B_TODAY), ("Просрочено", st.B_OVERDUE), ("Эта неделя", st.B_WEEK), ("Идёт", st.B_RUNNING)],
 ]
 SECTION_STYLE = {
     st.B_TODAY: Style(color=COLORS[st.ORANGE], bold=True),
     st.B_OVERDUE: Style(color=COLORS[st.RED], bold=True),
     st.B_WEEK: Style(color=COLORS[st.ORANGE]),
-    st.B_RUNNING: Style(color=COLORS[st.ORANGE]),
+    st.B_RUNNING: Style(color=COLORS[st.YELLOW]),
+    st.B_NEXT: Style(color=COLORS[st.GREEN], bold=True),
+    st.B_PLANNED: Style(color=COLORS[st.PLAIN]),
 }
 DIM = Style(color=COLORS[st.GREY])
 HEAD = Style(color=COLORS[st.PLAIN])
@@ -48,6 +50,9 @@ def collect(sheets: list[Node], now: datetime) -> dict[str, list[Node]]:
                 out.setdefault(place, []).append(node)
     for place, nodes in out.items():
         nodes.sort(key=lambda n: (n.priority or NO_PRIORITY, n.period.first(), n.period.last()))
+    if st.B_NEXT in out:
+        # Следующая неделя — по сроку: так её читают как план по дням.
+        out[st.B_NEXT].sort(key=lambda n: (n.period.first(), n.period.last(), n.priority or NO_PRIORITY))
     return out
 
 

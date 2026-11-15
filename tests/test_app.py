@@ -1662,3 +1662,25 @@ async def test_copy_without_clipboard_program_uses_terminal(tmp_path, monkeypatc
         await go_to(pilot, app, "a")
         await pilot.press("y", "y")
         assert sent == ["- a\n"] and app.message.startswith("Скопировано: 1")
+
+
+async def test_board_planned_next_week_first_by_date_then_priority(tmp_path):
+    from mindmap import status as st
+    from mindmap.canvas import COLORS
+    text = ("# Т\n\n- ▰ позже важное @2026-11-25\n- ▰▰▰▰ позже главное @2026-12-01\n- позже прочее @2026-11-17\n"
+            "- ▰▰▰▰ след. ср @2026-11-11\n- след. пн @2026-11-09\n- идёт @2026-11-01..2026-11-20\n")
+    app, path = make(tmp_path, text)
+    async with app.run_test(size=SIZE) as pilot:
+        await pilot.pause()
+        await pilot.press("v")
+        await pilot.pause()
+        board = app.query_board()
+        assert [n.title for n in board.cards[0]] == [
+            "след. пн", "след. ср",                                   # следующая неделя — по сроку
+            "позже главное", "позже важное", "позже прочее"]          # дальше — по приоритету
+        lines = [board.render_line(y).text for y in range(board.size.height)]
+        assert any("Следующая неделя (2)" in l for l in lines) and any("Позже (3)" in l for l in lines)
+        assert "идёт" in [n.title for n in board.cards[1]]
+        strip = next(board.render_line(y) for y in range(board.size.height) if "Идёт (1)" in board.render_line(y).text)
+        assert any(seg.style and seg.style.color and seg.style.color.name == COLORS[st.YELLOW]
+                   for seg in strip if "Идёт" in seg.text)

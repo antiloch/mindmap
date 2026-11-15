@@ -18,6 +18,7 @@ from .model import DoneStub, Node
 BACKGROUND = "#14161b"
 COLORS = {
     st.RED: "#ff5c57",
+    st.YELLOW: "#f2d34b",     # уже идёт
     st.ORANGE: "#ff9f1c",
     st.GREEN: "#3fcf6e",
     st.GREY: "#5f6672",
